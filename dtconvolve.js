@@ -3,20 +3,7 @@ var DTConvolve = function(p){
 		var plotXn = undefined;
 	//initial set up
  	p.setup =function() {
-		/*var maxCanvasWidth, canvasWidth, canvasHeight;
-		var firstPlotPos, margins, panelDim, plotXn, plotHn, plot3, plot4;
-		var pointsXn, pointsHn, points3, points4;*/
-
-		// Resize the canvas if necessary
-		/*maxCanvasWidth = document.getElementById("widthRef").clientWidth - 20;
-		canvasWidth = 500;
-		canvasHeight = canvasWidth;
-
-		if (canvasWidth > maxCanvasWidth) {
-			canvasHeight = canvasHeight * maxCanvasWidth / canvasWidth;
-			canvasWidth = maxCanvasWidth;
-		}
-		*/
+		
 		// Create the canvas
 		p.createCanvas(850, 650);
 
@@ -40,16 +27,7 @@ var DTConvolve = function(p){
 		plotXn.getTitle().setText("x[n]");
 		plotXn.setPoints(pointsXn);
 		plotXn.setLineColor(p.color(200,200,255));
-		//get points for h[n]
-	//	points Hn = [];
-	/*	plot2 = new GPlot(p);
-		plot2.setPos(firstPlotPos[0] + margins[1] + panelDim[0], firstPlotPos[1]);
-		plot2.setMar(0, 0, margins[2], margins[3]);
-		plot2.setDim(panelDim);
-		plot2.setAxesOffset(0);
-		plot2.setTicksLength(-4);
-		plot2.getXAxis().setDrawTickLabels(true);
-		plot2.getYAxis().setDrawTickLabels(true);*/
+
 	};
 
 	//execute sketch
