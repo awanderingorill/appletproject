@@ -4,7 +4,7 @@ var DTConvolve = function(p){
  	p.setup()=function() {
 		var maxCanvasWidth, canvasWidth, canvasHeight;
 		var firstPlotPos, margins, panelDim, plotXn, plotHn, plot3, plot4;
-		var pointsXn, pointshn, points3, points4;
+		var pointsXn, pointsHn, points3, points4;
 
 		// Resize the canvas if necessary
 		maxCanvasWidth = document.getElementById("widthRef").clientWidth - 20;
@@ -38,9 +38,9 @@ var DTConvolve = function(p){
 		plotXn.getYAxis().getAxisLabel().setText("x[n]");
 		plotXn.getTitle().setText("x[n]");
 		plotXn.setPoints(pointsXn);
-		plotXn.steLineColor(p.color(200,200,255));
+		plotXn.setLineColor(p.color(200,200,255));
 		//get points for h[n]
-		points Hn = [];
+	//	points Hn = [];
 	/*	plot2 = new GPlot(p);
 		plot2.setPos(firstPlotPos[0] + margins[1] + panelDim[0], firstPlotPos[1]);
 		plot2.setMar(0, 0, margins[2], margins[3]);
@@ -49,9 +49,24 @@ var DTConvolve = function(p){
 		plot2.setTicksLength(-4);
 		plot2.getXAxis().setDrawTickLabels(true);
 		plot2.getYAxis().setDrawTickLabels(true);*/
-	}
+	};
 
-	function draw(){
-	ellipse(50, 50, 80, 80);
+	//execute sketch
+	p.draw = function() {
+		//clean canvas
+		p.background(255);
+
+		//draw x[n] plot
+		plotXn.beginDraw();
+		plotXn.drawBox();
+		plotXn.drawXAxis();
+		plotXn.drawYAxis();
+		plotXn.drawTopAxis();
+		plotXn.drawRightAxis();
+		plotXn.drawTitle();
+		plotXn.drawLabels();
+		plotXn.endDraw();
 	};
 };
+
+var myp5 = new p5(DTConvolve);
