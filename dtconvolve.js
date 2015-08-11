@@ -2,6 +2,9 @@
 var DTConvolve = function(p){
 		var plotXn = undefined;
 		var pointsXn = undefined;
+		var draggable = false;
+		var point = undefined;
+		var x = undefined;
 	//initial set up
  	p.setup =function() {
 		var i;
@@ -32,6 +35,10 @@ var DTConvolve = function(p){
 		plotXn.setPoints(pointsXn);
 		plotXn.setLineColor(p.color(200,200,255));
 
+		//setup the mouse actions
+		window.addEventListener("mousedown",this.mouseDownEvent.bind(this));
+//		window.addEventListener("mousemove",this.mouseMovedEvent.bind(this));
+		window.addEventListener("mouseup",this.mouseUpEvent.bind(this));
 	};
 
 	//execute sketch
@@ -51,7 +58,38 @@ var DTConvolve = function(p){
 		plotXn.drawGridLines(GPlot.BOTH);
 		plotXn.drawPoints();
 		plotXn.endDraw();
+
+		//actions for x[n] plot
+		//plotXn.activatePointLabels();
 	};
+	p.mouseDownEvent = function(event){
+		console.log("mouse downed");
+		e = event || window.event;
+		point = plotXn.getPointAt(p.mouseX,p.mouseY);
+		if(point){
+			x = p.mouseX;
+			plotXn.removePointAt(p.mouseX,p.mouseY);
+			draggable = true;
+		}
+	}
+/*	p.mouseMovedEvent = function(event){
+		console.log("mouse moved");
+		if(draggable && point){
+			console.log(point.getX(),point.getY());
+			//plotXn.removePointAt(point.getX(),point.getY());
+			//point.setY((plotXn.getPlotPosAt(p.mouseX,p.mouseY))[1]);
+			//plotXn.addPoint(point);
+		}
+	}*/
+	p.mouseUpEvent = function(event){
+		console.log("mouse upped");
+		if(draggable){
+			plotXn.addPointAt(x,p.mouseY);
+		}	
+	//	plotXn.addPoint(point);
+	//	point = undefined;
+		draggable = false;
+	}
 };
 
 var myp5 = new p5(DTConvolve);
