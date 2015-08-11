@@ -63,7 +63,7 @@ var DTConvolve = function(p){
 		//plotXn.activatePointLabels();
 	};
 	p.mouseDownEvent = function(event){
-		console.log("mouse downed");
+	//	console.log("mouse downed");
 		e = event || window.event;
 		point = plotXn.getPointAt(p.mouseX,p.mouseY);
 		if(point){
@@ -82,9 +82,10 @@ var DTConvolve = function(p){
 		}
 	}*/
 	p.mouseUpEvent = function(event){
-		console.log("mouse upped");
+	//	console.log("mouse upped");
 		if(draggable){
 			plotXn.addPointAt(x,p.mouseY);
+			plotXn.drawVerticalLine(plotXn.getPointAt(x,p.mouseY));
 		}	
 	//	plotXn.addPoint(point);
 	//	point = undefined;
