@@ -1,9 +1,10 @@
 
 var DTConvolve = function(p){
 		var plotXn = undefined;
+		var pointsXn = undefined;
 	//initial set up
  	p.setup =function() {
-		
+		var i;
 		// Create the canvas
 		p.createCanvas(850, 650);
 
@@ -16,11 +17,14 @@ var DTConvolve = function(p){
 
 		//get points for x[n]
 		pointsXn = [];
+		for(i = 0; i <= 23; i++){
+			pointsXn[i]= new GPoint(i-11,0);
+		}
 		//x[n] plot set up
 		plotXn = new GPlot(p);
 		plotXn.setPos(firstPlotPos);
 		plotXn.setOuterDim(0.6 * p.width, 0.4 * p.width);
-		plotXn.setXLim(-5,5);
+		plotXn.setXLim(-11,11);
 		plotXn.setYLim(-5,5);
 		plotXn.getXAxis().getAxisLabel().setText("Time");
 		plotXn.getYAxis().getAxisLabel().setText("x[n]");
@@ -44,6 +48,8 @@ var DTConvolve = function(p){
 		plotXn.drawRightAxis();
 		plotXn.drawTitle();
 		plotXn.drawLabels();
+		plotXn.drawGridLines(GPlot.BOTH);
+		plotXn.drawPoints();
 		plotXn.endDraw();
 	};
 };
