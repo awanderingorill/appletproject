@@ -34,21 +34,21 @@ var DTConvolve = function(p){
 		plotXn.setOuterDim(0.6 * p.width, 0.4 * p.width);
 		plotXn.setXLim(-5,5);
 		plotXn.setYLim(-5,5);
-		plotXn.getXAxis().getAxisLabel().setText("Time"));
+		plotXn.getXAxis().getAxisLabel().setText("Time");
 		plotXn.getYAxis().getAxisLabel().setText("x[n]");
 		plotXn.getTitle().setText("x[n]");
 		plotXn.setPoints(pointsXn);
-
+		plotXn.steLineColor(p.color(200,200,255));
 		//get points for h[n]
 		points Hn = [];
-		plot2 = new GPlot(p);
+	/*	plot2 = new GPlot(p);
 		plot2.setPos(firstPlotPos[0] + margins[1] + panelDim[0], firstPlotPos[1]);
 		plot2.setMar(0, 0, margins[2], margins[3]);
 		plot2.setDim(panelDim);
 		plot2.setAxesOffset(0);
 		plot2.setTicksLength(-4);
 		plot2.getXAxis().setDrawTickLabels(true);
-		plot2.getYAxis().setDrawTickLabels(true);
+		plot2.getYAxis().setDrawTickLabels(true);*/
 	}
 
 	function draw(){
