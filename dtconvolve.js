@@ -1,13 +1,14 @@
 
 var DTConvolve = function(p){
+		var plotXn = undefined;
 	//initial set up
- 	p.setup()=function() {
-		var maxCanvasWidth, canvasWidth, canvasHeight;
+ 	p.setup =function() {
+		/*var maxCanvasWidth, canvasWidth, canvasHeight;
 		var firstPlotPos, margins, panelDim, plotXn, plotHn, plot3, plot4;
-		var pointsXn, pointsHn, points3, points4;
+		var pointsXn, pointsHn, points3, points4;*/
 
 		// Resize the canvas if necessary
-		maxCanvasWidth = document.getElementById("widthRef").clientWidth - 20;
+		/*maxCanvasWidth = document.getElementById("widthRef").clientWidth - 20;
 		canvasWidth = 500;
 		canvasHeight = canvasWidth;
 
@@ -15,9 +16,9 @@ var DTConvolve = function(p){
 			canvasHeight = canvasHeight * maxCanvasWidth / canvasWidth;
 			canvasWidth = maxCanvasWidth;
 		}
-
+		*/
 		// Create the canvas
-		p.createCanvas(canvasWidth, canvasHeight);
+		p.createCanvas(850, 650);
 
 		// Define panel properties
 		firstPlotPos = [ 0, 0 ];
