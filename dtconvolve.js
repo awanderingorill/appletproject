@@ -4,7 +4,9 @@ var DTConvolve = function(p){
 		var pointsXn = undefined;
 		var draggable = false;
 		var point = undefined;
+		var lastPoint = undefined;
 		var x = undefined;
+		var ctx = document.getElementById("myCanvas");
 	//initial set up
  	p.setup =function() {
 		var i;
@@ -29,15 +31,15 @@ var DTConvolve = function(p){
 		plotXn.setOuterDim(0.6 * p.width, 0.4 * p.width);
 		plotXn.setXLim(-11,11);
 		plotXn.setYLim(-5,5);
-		plotXn.getXAxis().getAxisLabel().setText("Time");
+		plotXn.getXAxis().getAxisLabel().setText("Time(n)");
 		plotXn.getYAxis().getAxisLabel().setText("x[n]");
 		plotXn.getTitle().setText("x[n]");
 		plotXn.setPoints(pointsXn);
-		plotXn.setLineColor(p.color(200,200,255));
+	//	plotXn.setLineColor(p.color(200,200,255));
 
 		//setup the mouse actions
 		window.addEventListener("mousedown",this.mouseDownEvent.bind(this));
-//		window.addEventListener("mousemove",this.mouseMovedEvent.bind(this));
+		window.addEventListener("mousemove",this.mouseMovedEvent.bind(this));
 		window.addEventListener("mouseup",this.mouseUpEvent.bind(this));
 	};
 
@@ -68,27 +70,25 @@ var DTConvolve = function(p){
 		point = plotXn.getPointAt(p.mouseX,p.mouseY);
 		if(point){
 			x = p.mouseX;
-			plotXn.removePointAt(p.mouseX,p.mouseY);
+			y = p.mouseY;
 			draggable = true;
 		}
 	}
-/*	p.mouseMovedEvent = function(event){
-		console.log("mouse moved");
+	p.mouseMovedEvent = function(event){
+		//console.log("mouse moved");
 		if(draggable && point){
-			console.log(point.getX(),point.getY());
-			//plotXn.removePointAt(point.getX(),point.getY());
-			//point.setY((plotXn.getPlotPosAt(p.mouseX,p.mouseY))[1]);
-			//plotXn.addPoint(point);
+			//console.log(point.getX(),point.getY());
+			plotXn.removePointAt(x,y);
+			y = p.mouseY;
+			plotXn.addPointAt(x,y);
 		}
-	}*/
+	}
 	p.mouseUpEvent = function(event){
 	//	console.log("mouse upped");
 		if(draggable){
+			plotXn.removePointAt(x,y);
 			plotXn.addPointAt(x,p.mouseY);
-			plotXn.drawVerticalLine(plotXn.getPointAt(x,p.mouseY));
 		}	
-	//	plotXn.addPoint(point);
-	//	point = undefined;
 		draggable = false;
 	}
 };
