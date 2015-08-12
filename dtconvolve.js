@@ -45,6 +45,7 @@ var DTConvolve = function(p){
 
 	//execute sketch
 	p.draw = function() {
+
 		//clean canvas
 		p.background(255);
 
@@ -61,7 +62,8 @@ var DTConvolve = function(p){
 		plotXn.drawPoints();
 		//draw lines to points
 		for(i = 0; i<pointsXn.length;i++){
-			plotXn.drawLine(new GPoint(i-11,0),plotXn.getPoints()[i],0,2);
+			var tempPoint = plotXn.getPoints()[i];
+			plotXn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,0,2);
 		}
 		plotXn.endDraw();
 
