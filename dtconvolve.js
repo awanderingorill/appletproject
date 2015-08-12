@@ -2,7 +2,7 @@
 var DTConvolve = function(p){
 		var plotXn = undefined;
 		var pointsXn = undefined;
-		var draggable = false;
+		var selected = false;
 		var point = undefined;
 		var lastPoint = undefined;
 		var x = undefined;
@@ -71,25 +71,27 @@ var DTConvolve = function(p){
 		if(point){
 			x = p.mouseX;
 			y = p.mouseY;
-			draggable = true;
+			selected = true;
 		}
 	}
 	p.mouseMovedEvent = function(event){
 		//console.log("mouse moved");
-		if(draggable && point){
+		if(selected){
 			//console.log(point.getX(),point.getY());
 			plotXn.removePointAt(x,y);
 			y = p.mouseY;
 			plotXn.addPointAt(x,y);
+
+			plotXn.drawLine((new GPoint(0,0)),plotXn.getPointAt(x,y),155,2);
 		}
 	}
 	p.mouseUpEvent = function(event){
 	//	console.log("mouse upped");
-		if(draggable){
+		if(selected){
 			plotXn.removePointAt(x,y);
 			plotXn.addPointAt(x,p.mouseY);
+			selected = false;
 		}	
-		draggable = false;
 	}
 };
 
