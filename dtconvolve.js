@@ -22,7 +22,7 @@ var DTConvolve = function(p){
 
 		//get points for x[n]
 		pointsXn = [];
-		for(i = 0; i <= 23; i++){
+		for(i = 0; i < 23; i++){
 			pointsXn[i]= new GPoint(i-11,0);
 		}
 		//x[n] plot set up
@@ -59,6 +59,10 @@ var DTConvolve = function(p){
 		plotXn.drawLabels();
 		plotXn.drawGridLines(GPlot.BOTH);
 		plotXn.drawPoints();
+		//draw lines to points
+		for(i = 0; i<pointsXn.length;i++){
+			plotXn.drawLine(new GPoint(i-11,0),plotXn.getPoints()[i],0,2);
+		}
 		plotXn.endDraw();
 
 		//actions for x[n] plot
@@ -81,8 +85,8 @@ var DTConvolve = function(p){
 			plotXn.removePointAt(x,y);
 			y = p.mouseY;
 			plotXn.addPointAt(x,y);
-
-			plotXn.drawLine((new GPoint(0,0)),plotXn.getPointAt(x,y),155,2);
+			//plotXn.beginDraw();
+			//plotXn.endDraw();
 		}
 	}
 	p.mouseUpEvent = function(event){
