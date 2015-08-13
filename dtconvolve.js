@@ -149,13 +149,12 @@ var DTConvolve = function(p){
 			if(plotXn.isOverBox()){
 				plotXn.removePointAt(x,y);
 				plotXn.addPointAt(x,p.mouseY);
-				selected = false;
 			}
 			else if(plotHn.isOverBox()){
 				plotHn.removePointAt(x,y);
 				plotHn.addPointAt(x,p.mouseY);
-				selected = false;
 			}
+			selected = false;
 		}	
 	}
 };
