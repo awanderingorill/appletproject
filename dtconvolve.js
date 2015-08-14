@@ -52,6 +52,8 @@ var DTConvolve = function(p){
 		plotHn.getYAxis().getAxisLabel().setText("h[n]");
 		plotHn.getTitle().setText("h[n]");
 		plotHn.setPoints(pointsHn);
+		plotHn.setPointColor(p.color(100,100,255));
+
 
 		//get points for x[n-k] and h[k]
 		//leave points empty for now, will be filled in draw()
@@ -115,7 +117,7 @@ var DTConvolve = function(p){
 		//draw lines to points
 		for(i = 0; i<pointsHn.length;i++){
 			tempPoint = plotHn.getPoints()[i];
-			plotHn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
+			plotHn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"blue",2);
 		}
 		plotHn.endDraw();
 
