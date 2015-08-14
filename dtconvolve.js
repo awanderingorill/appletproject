@@ -134,6 +134,8 @@ var DTConvolve = function(p){
 			}
 		}
 		plotXnmkHk.setPoints(pointsXnmkHk);
+		var XnmkhKColors = [p.color(100,100,255),p.color(255,0,0)];
+		plotXnmkHk.setPointColors(XnmkhKColors);
 		//draw X[n-k] and h[k]
 		plotXnmkHk.beginDraw();
 		plotXnmkHk.drawBox();
