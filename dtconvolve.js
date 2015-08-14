@@ -1,10 +1,10 @@
 
 var DTConvolve = function(p){
-		var plotXn = undefined;
-		var pointsXn = undefined;
+		var plotXn,plotHn,plotXnmkHk = undefined;
+		var pointsXn,pointsHn,pointsXnmkHk = undefined;
 		var selected = false;
 		var point = undefined;
-		var lastPoint = undefined;
+		var tempPoint = undefined;
 		var x = undefined;
 		var ctx = document.getElementById("myCanvas");
 	//initial set up
@@ -37,7 +37,7 @@ var DTConvolve = function(p){
 		plotXn.setPoints(pointsXn);
 	//	plotXn.setLineColor(p.color(200,200,255));
 
-		//get points for x[n]
+		//get points for h[n]
 		pointsHn = [];
 		for(i = 0; i < 23; i++){
 			pointsHn[i]= new GPoint(i-11,0);
@@ -53,6 +53,21 @@ var DTConvolve = function(p){
 		plotHn.getTitle().setText("h[n]");
 		plotHn.setPoints(pointsHn);
 
+		//get points for x[n-k] and h[k]
+		//leave points empty for now, will be filled in draw()
+		pointsXnmkHk = [];
+		
+		//set up plot x[n-k] and h[k]
+		plotXnmkHk = new GPlot(p);
+		plotXnmkHk.setPos(0,0.3*p.width);
+		plotXnmkHk.setOuterDim(0.8 * p.width, 0.3 * p.width);
+		plotXnmkHk.setXLim(-22,22);
+		plotXnmkHk.setYLim(-5,5);
+		plotXnmkHk.getXAxis().getAxisLabel().setText("Time(n)");
+		plotXnmkHk.getYAxis().getAxisLabel().setText("x[n-k] and h[k]");
+		plotXnmkHk.getTitle().setText("x[n-k] and h[k]");
+		plotXnmkHk.setPoints(pointsXnmkHk);
+
 		//setup the mouse actions
 		window.addEventListener("mousedown",this.mouseDownEvent.bind(this));
 		window.addEventListener("mousemove",this.mouseMovedEvent.bind(this));
@@ -61,7 +76,7 @@ var DTConvolve = function(p){
 
 	//execute sketch
 	p.draw = function() {
-
+		//var xPoints, yPoints;
 		//clean canvas
 		p.background(255);
 
@@ -78,7 +93,7 @@ var DTConvolve = function(p){
 		plotXn.drawPoints();
 		//draw lines to points
 		for(i = 0; i<pointsXn.length;i++){
-			var tempPoint = plotXn.getPoints()[i];
+			tempPoint = plotXn.getPoints()[i];
 			plotXn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
 		}
 		plotXn.endDraw();
@@ -99,10 +114,41 @@ var DTConvolve = function(p){
 		plotHn.drawPoints();
 		//draw lines to points
 		for(i = 0; i<pointsHn.length;i++){
-			var tempPoint = plotHn.getPoints()[i];
+			tempPoint = plotHn.getPoints()[i];
 			plotHn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
 		}
 		plotHn.endDraw();
+
+		//get points for x[n-k] and h[k]
+		
+		for(i  = 0; i<pointsXn.length+pointsHn.length;i++){
+			if(i < pointsXn.length){
+				tempPoint = plotXn.getPoints()[i];
+				pointsXnmkHk[i] = new GPoint(-tempPoint.getX(),tempPoint.getY());
+			}
+			else {
+				tempPoint = plotHn.getPoints()[i-pointsXn.length];
+				pointsXnmkHk[i] = new GPoint(tempPoint.getX(),tempPoint.getY());
+			}
+		}
+		plotXnmkHk.setPoints(pointsXnmkHk);
+		//draw X[n-k] and h[k]
+		plotXnmkHk.beginDraw();
+		plotXnmkHk.drawBox();
+		plotXnmkHk.drawXAxis();
+		plotXnmkHk.drawYAxis();
+		plotXnmkHk.drawTopAxis();
+		plotXnmkHk.drawRightAxis();
+		plotXnmkHk.drawTitle();
+		plotXnmkHk.drawLabels();
+		plotXnmkHk.drawGridLines(GPlot.BOTH);
+		plotXnmkHk.drawPoints();
+		//draw lines to points
+		for(i = 0; i<pointsXnmkHk.length;i++){
+			tempPoint = plotXnmkHk.getPoints()[i];
+			plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
+		}
+		plotXnmkHk.endDraw();
 
 	};
 	p.mouseDownEvent = function(event){
