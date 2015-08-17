@@ -1,14 +1,14 @@
 
 var DTConvolve = function(p){
-		var plotXn,plotHn,plotXnmkHk = undefined;
-		var pointsXn,pointsHn,pointsXnmkHk = undefined;
+		var plotXn,plotHn,plotXnmkHk;
+		var pointsXn,pointsHn,pointsXnmkHk ;
 		var selected = false;
-		var point = undefined;
-		var tempPoint = undefined;
-		var plotXY = undefined;
-		var xplot = undefined;
+		var point;
+		var tempPoint;
+		var plotXY;
+		var xplot;
 		var ctx = document.getElementById("myCanvas");
-		var index = undefined;
+		var index;
 	//initial set up
  	p.setup = function() {
 	//	var i;
@@ -128,20 +128,22 @@ var DTConvolve = function(p){
 		plotHn.endDraw();
 
 		//get points for x[n-k] and h[k]
-
-		for(i  = 0; i<pointsXn.length+pointsHn.length;i++){
-			if(i < pointsXn.length){
-				tempPoint = plotXn.getPoints()[i];
-				pointsXnmkHk[i] = new GPoint(-tempPoint.getX(),tempPoint.getY());
-			}
-			else {
-				tempPoint = plotHn.getPoints()[i-pointsXn.length];
-				pointsXnmkHk[i] = new GPoint(tempPoint.getX(),tempPoint.getY());
-			}
+		//have to insert every other due to library coloring algorithm
+		var j = 0;
+		for(i = 0; i < pointsXn.length; i++){
+			pointsXnmkHk[j] = new GPoint(-plotXn.getPoints()[i].getX(),plotXn.getPoints()[i].getY());
+			j+=2;
+		}
+		j = 1;
+		for(i = 0; i < pointsHn.length; i++){
+			pointsXnmkHk[j] = plotHn.getPoints()[i];
+			j+=2;
 		}
 		plotXnmkHk.setPoints(pointsXnmkHk);
-		var XnmkhKColors = [p.color(100,100,255),p.color(255,0,0)];
+
+		var XnmkhKColors = [p.color(255,0,0),p.color(100,100,255)];
 		plotXnmkHk.setPointColors(XnmkhKColors);
+
 		//draw X[n-k] and h[k]
 		plotXnmkHk.beginDraw();
 		plotXnmkHk.drawBox();
@@ -156,9 +158,13 @@ var DTConvolve = function(p){
 		//draw lines to points
 		for(i = 0; i<pointsXnmkHk.length;i++){
 			tempPoint = plotXnmkHk.getPoints()[i];
-			plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
+			if(i % 2 == 0){
+				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
+			}
+			else {
+				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"blue",2);
+			}
 		}
-		plotXnmkHk.endDraw();
 
 	};
 
@@ -170,7 +176,7 @@ var DTConvolve = function(p){
 			index = xPlot + 11;
 			plotXn.getPointsRef()[index].setY(plotXY[1]);
 			selected = true;
-			console.log(selected);
+	//		console.log(selected);
 		}
 		else if(plotHn.isOverBox()){
 			plotXY = plotHn.getValueAt(p.mouseX,p.mouseY);
@@ -178,7 +184,10 @@ var DTConvolve = function(p){
 			index = xPlot + 11;
 			plotHn.getPointsRef()[index].setY(plotXY[1]);
 			selected = true;
-			console.log(selected);
+		//	console.log(selected);
+		}
+		else if (plotXnmkHk.isOverBox()){
+			selected = true;
 		}
 		else {
 			selected = false;
@@ -192,15 +201,18 @@ var DTConvolve = function(p){
 					plotXY = plotXn.getValueAt(p.mouseX,p.mouseY);
 					xPlot = Math.round(plotXY[0]);
 					index = xPlot + 11;
-					console.log(selected);
+			//		console.log(selected);
 					plotXn.getPointsRef()[index].setY(plotXY[1]);
 				}
 				else if(plotHn.isOverBox()){
 					plotXY = plotHn.getValueAt(p.mouseX,p.mouseY);
 					xPlot = Math.round(plotXY[0]);
 					index = xPlot + 11;
-					console.log(selected);
+			//		console.log(selected);
 					plotHn.getPointsRef()[index].setY(plotXY[1]);
+				}
+				else if(plotXnmkHk.isOverBox()){
+
 				}
 				else {
 					selected = false;
