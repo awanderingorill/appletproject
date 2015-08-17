@@ -5,11 +5,13 @@ var DTConvolve = function(p){
 		var selected = false;
 		var point = undefined;
 		var tempPoint = undefined;
-		var x = undefined;
+		var plotXY = undefined;
+		var xplot = undefined;
 		var ctx = document.getElementById("myCanvas");
+		var index = undefined;
 	//initial set up
- 	p.setup =function() {
-		var i;
+ 	p.setup = function() {
+	//	var i;
 		// Create the canvas
 		p.createCanvas(850, 650);
 
@@ -58,7 +60,7 @@ var DTConvolve = function(p){
 		//get points for x[n-k] and h[k]
 		//leave points empty for now, will be filled in draw()
 		pointsXnmkHk = [];
-		
+
 		//set up plot x[n-k] and h[k]
 		plotXnmkHk = new GPlot(p);
 		plotXnmkHk.setPos(0,0.3*p.width);
@@ -81,6 +83,7 @@ var DTConvolve = function(p){
 		//var xPoints, yPoints;
 		//clean canvas
 		p.background(255);
+		//update points for x[n]
 
 		//draw x[n] plot
 		plotXn.beginDraw();
@@ -92,12 +95,14 @@ var DTConvolve = function(p){
 		plotXn.drawTitle();
 		plotXn.drawLabels();
 		plotXn.drawGridLines(GPlot.BOTH);
-		plotXn.drawPoints();
+
 		//draw lines to points
 		for(i = 0; i<pointsXn.length;i++){
 			tempPoint = plotXn.getPoints()[i];
 			plotXn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
 		}
+		plotXn.getLayer("main layer").updatePlotPoints();
+		plotXn.drawPoints();
 		plotXn.endDraw();
 
 		//actions for x[n] plot
@@ -113,16 +118,17 @@ var DTConvolve = function(p){
 		plotHn.drawTitle();
 		plotHn.drawLabels();
 		plotHn.drawGridLines(GPlot.BOTH);
-		plotHn.drawPoints();
 		//draw lines to points
 		for(i = 0; i<pointsHn.length;i++){
 			tempPoint = plotHn.getPoints()[i];
 			plotHn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"blue",2);
 		}
+		plotHn.getLayer("main layer").updatePlotPoints();
+		plotHn.drawPoints();
 		plotHn.endDraw();
 
 		//get points for x[n-k] and h[k]
-		
+
 		for(i  = 0; i<pointsXn.length+pointsHn.length;i++){
 			if(i < pointsXn.length){
 				tempPoint = plotXn.getPoints()[i];
@@ -155,58 +161,56 @@ var DTConvolve = function(p){
 		plotXnmkHk.endDraw();
 
 	};
+
 	p.mouseDownEvent = function(event){
 	//	console.log("mouse downed");
-		e = event || window.event;
 		if(plotXn.isOverBox()){
-			point = plotXn.getPointAt(p.mouseX,p.mouseY);
-			
+			plotXY = plotXn.getValueAt(p.mouseX,p.mouseY);
+			xPlot = Math.round(plotXY[0]);
+			index = xPlot + 11;
+			plotXn.getPointsRef()[index].setY(plotXY[1]);
+			selected = true;
+			console.log(selected);
 		}
 		else if(plotHn.isOverBox()){
-			point = plotHn.getPointAt(p.mouseX,p.mouseY);
+			plotXY = plotHn.getValueAt(p.mouseX,p.mouseY);
+			xPlot = Math.round(plotXY[0]);
+			index = xPlot + 11;
+			plotHn.getPointsRef()[index].setY(plotXY[1]);
+			selected = true;
+			console.log(selected);
 		}
 		else {
-			point = undefined;
+			selected = false;
 		}
+	};
 
-		if(point){
-				x = p.mouseX;
-				y = p.mouseY;
-				selected = true;
-			}
-	}
 	p.mouseMovedEvent = function(event){
-		//console.log("mouse moved");
-		if(selected){
-			//console.log(point.getX(),point.getY());
-			if(plotXn.isOverBox()){
-			//	console.log("moving over xbox");
-				plotXn.removePointAt(x,y);
-				y = p.mouseY;
-				plotXn.addPointAt(x,y);
+//		console.log("mouse moved");
+			if(selected){
+				if(plotXn.isOverBox()){
+					plotXY = plotXn.getValueAt(p.mouseX,p.mouseY);
+					xPlot = Math.round(plotXY[0]);
+					index = xPlot + 11;
+					console.log(selected);
+					plotXn.getPointsRef()[index].setY(plotXY[1]);
+				}
+				else if(plotHn.isOverBox()){
+					plotXY = plotHn.getValueAt(p.mouseX,p.mouseY);
+					xPlot = Math.round(plotXY[0]);
+					index = xPlot + 11;
+					console.log(selected);
+					plotHn.getPointsRef()[index].setY(plotXY[1]);
+				}
+				else {
+					selected = false;
+				}
 			}
-			else if(plotHn.isOverBox()){
-			//	console.log("moving over hbox");
-				plotHn.removePointAt(x,y);
-				y = p.mouseY;
-				plotHn.addPointAt(x,y);
-			}
-		}
-	}
+	};
+
 	p.mouseUpEvent = function(event){
 	//	console.log("mouse upped");
-		if(selected){
-			if(plotXn.isOverBox()){
-				plotXn.removePointAt(x,y);
-				plotXn.addPointAt(x,p.mouseY);
-			}
-			else if(plotHn.isOverBox()){
-				plotHn.removePointAt(x,y);
-				plotHn.addPointAt(x,p.mouseY);
-			}
-			selected = false;
-		}	
-	}
-};
-
+		selected = false;
+	};
+}
 var myp5 = new p5(DTConvolve);
