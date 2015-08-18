@@ -38,7 +38,6 @@ var DTConvolve = function(p){
 		plotXn.getYAxis().getAxisLabel().setText("x[n]");
 		plotXn.getTitle().setText("x[n]");
 		plotXn.setPoints(pointsXn);
-	//	plotXn.setLineColor(p.color(200,200,255));
 
 		//get points for h[n]
 		pointsHn = [];
@@ -100,7 +99,7 @@ var DTConvolve = function(p){
 		//draw lines to points
 		for(i = 0; i<pointsXn.length;i++){
 			tempPoint = plotXn.getPoints()[i];
-			plotXn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
+			plotXn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(251,101,101),2);
 		}
 		plotXn.getLayer("main layer").updatePlotPoints();
 		plotXn.drawPoints();
@@ -122,7 +121,7 @@ var DTConvolve = function(p){
 		//draw lines to points
 		for(i = 0; i<pointsHn.length;i++){
 			tempPoint = plotHn.getPoints()[i];
-			plotHn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"blue",2);
+			plotHn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(100,100,255),2);
 		}
 		plotHn.getLayer("main layer").updatePlotPoints();
 		plotHn.drawPoints();
@@ -142,7 +141,7 @@ var DTConvolve = function(p){
 		}
 		plotXnmkHk.setPoints(pointsXnmkHk);
 
-		var XnmkhKColors = [p.color(255,0,0),p.color(100,100,255)];
+		var XnmkhKColors = [p.color(251,101,101),p.color(100,100,255)];
 		plotXnmkHk.setPointColors(XnmkhKColors);
 
 		//draw X[n-k] and h[k]
@@ -160,19 +159,18 @@ var DTConvolve = function(p){
 		for(i = 0; i<pointsXnmkHk.length;i++){
 			tempPoint = plotXnmkHk.getPoints()[i];
 			if(i % 2 == 0){
-				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"red",2);
+				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(251,101,101),2);
 			}
 			else {
-				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"blue",2);
+				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(100,100,255),2);
 			}
 		}
 		//draw filler points
 		for(i = 0; i<length; i++){
 			if(i < 10 || i>32){
-				plotXnmkHk.drawPoint(new GPoint(i-21,0),"blue",plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+				plotXnmkHk.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
 			}
 			else{
-
 			}
 		}
 		plotXnmkHk.endDraw();
