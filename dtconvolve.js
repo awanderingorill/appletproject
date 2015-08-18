@@ -10,6 +10,7 @@ var DTConvolve = function(p){
 		var ctx = document.getElementById("myCanvas");
 		var index;
 		var length = 42;
+		var xShift = 0;
 	//initial set up
  	p.setup = function() {
 	//	var i;
@@ -131,7 +132,7 @@ var DTConvolve = function(p){
 		//have to insert every other due to library coloring algorithm
 		var j = 0;
 		for(i = 0; i < pointsXn.length; i++){
-			pointsXnmkHk[j] = new GPoint(-plotXn.getPoints()[i].getX(),plotXn.getPoints()[i].getY());
+			pointsXnmkHk[j] = new GPoint(-plotXn.getPoints()[i].getX()+xShift,plotXn.getPoints()[i].getY());
 			j+=2;
 		}
 		j = 1;
@@ -195,6 +196,8 @@ var DTConvolve = function(p){
 		//	console.log(selected);
 		}
 		else if (plotXnmkHk.isOverBox()){
+			plotXY = plotXnmkHk.getValueAt(p.mouseX,p.mouseY);
+			xShift = Math.round(plotXY[0]);
 			selected = true;
 		}
 		else {
@@ -220,7 +223,8 @@ var DTConvolve = function(p){
 					plotHn.getPointsRef()[index].setY(plotXY[1]);
 				}
 				else if(plotXnmkHk.isOverBox()){
-
+					plotXY = plotXnmkHk.getValueAt(p.mouseX,p.mouseY);
+					xShift = Math.round(plotXY[0]);
 				}
 				else {
 					selected = false;
