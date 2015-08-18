@@ -9,6 +9,7 @@ var DTConvolve = function(p){
 		var xplot;
 		var ctx = document.getElementById("myCanvas");
 		var index;
+		var length = 42;
 	//initial set up
  	p.setup = function() {
 	//	var i;
@@ -65,7 +66,7 @@ var DTConvolve = function(p){
 		plotXnmkHk = new GPlot(p);
 		plotXnmkHk.setPos(0,0.3*p.width);
 		plotXnmkHk.setOuterDim(0.8 * p.width, 0.3 * p.width);
-		plotXnmkHk.setXLim(-22,22);
+		plotXnmkHk.setXLim(-21,21);
 		plotXnmkHk.setYLim(-5,5);
 		plotXnmkHk.getXAxis().getAxisLabel().setText("Time(n)");
 		plotXnmkHk.getYAxis().getAxisLabel().setText("x[n-k] and h[k]");
@@ -165,7 +166,16 @@ var DTConvolve = function(p){
 				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,"blue",2);
 			}
 		}
+		//draw filler points
+		for(i = 0; i<length; i++){
+			if(i < 10 || i>32){
+				plotXnmkHk.drawPoint(new GPoint(i-21,0),"blue",plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+			}
+			else{
 
+			}
+		}
+		plotXnmkHk.endDraw();
 	};
 
 	p.mouseDownEvent = function(event){
