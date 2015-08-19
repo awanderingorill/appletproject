@@ -1,7 +1,7 @@
 
 var DTConvolve = function(p){
-		var plotXn,plotHn,plotFlipShift,plotMultiply;
-		var pointsXn,pointsHn,pointsFlipShift,pointsMultiply;
+		var plotXn,plotHn,plotFlipShift,plotMultiply,plotConvolve;
+		var pointsXn,pointsHn,pointsFlipShift,pointsMultiply,pointsConvolve;
 		var selected = false;
 		var point;
 		var tempPoint;
@@ -15,7 +15,7 @@ var DTConvolve = function(p){
  	p.setup = function() {
 	//	var i;
 		// Create the canvas
-		p.createCanvas(850, 1000);
+		p.createCanvas(850, 1100);
 
 		// Define panel properties
 		firstPlotPos = [ 0, 0 ];
@@ -35,7 +35,7 @@ var DTConvolve = function(p){
 		plotXn.setOuterDim(0.4 * p.width, 0.3 * p.width);
 		plotXn.setXLim(-11,11);
 		plotXn.setYLim(-5,5);
-		plotXn.getXAxis().getAxisLabel().setText("Time(n)");
+		plotXn.getXAxis().getAxisLabel().setText("Time[n]");
 		plotXn.getYAxis().getAxisLabel().setText("x[n]");
 		plotXn.getTitle().setText("x[n]");
 		plotXn.setPoints(pointsXn);
@@ -51,7 +51,7 @@ var DTConvolve = function(p){
 		plotHn.setOuterDim(0.4 * p.width, 0.3 * p.width);
 		plotHn.setXLim(-11,11);
 		plotHn.setYLim(-5,5);
-		plotHn.getXAxis().getAxisLabel().setText("Time(n)");
+		plotHn.getXAxis().getAxisLabel().setText("Time[n]");
 		plotHn.getYAxis().getAxisLabel().setText("h[n]");
 		plotHn.getTitle().setText("h[n]");
 		plotHn.setPoints(pointsHn);
@@ -68,13 +68,13 @@ var DTConvolve = function(p){
 		plotFlipShift.setOuterDim(0.8 * p.width, 0.3 * p.width);
 		plotFlipShift.setXLim(-21,21);
 		plotFlipShift.setYLim(-5,5);
-		plotFlipShift.getXAxis().getAxisLabel().setText("Time(n)");
+		plotFlipShift.getXAxis().getAxisLabel().setText("Time[k]");
 		plotFlipShift.getYAxis().getAxisLabel().setText("x[n-k] and h[k]");
 		plotFlipShift.getTitle().setText("x[n-k] and h[k]");
 		plotFlipShift.setPoints(pointsFlipShift);
 
 		//get points for x[n-k]h[k]
-		//leave points empty for noew, will be filled in draw()
+		//leave points empty for now, will be filled in draw()
 		pointsMultiply = [];
 		//set up plot x[n-k]h[k]
 		plotMultiply = new GPlot(p);
@@ -82,10 +82,24 @@ var DTConvolve = function(p){
 		plotMultiply.setOuterDim(0.8 * p.width, 0.3 * p.width);
 		plotMultiply.setXLim(-21,21);
 		plotMultiply.setYLim(-25,25);
-		plotMultiply.getXAxis().getAxisLabel().setText("Time(n)");
+		plotMultiply.getXAxis().getAxisLabel().setText("Time[k]");
 		plotMultiply.getYAxis().getAxisLabel().setText("x[n-k]h[k]");
 		plotMultiply.getTitle().setText("x[n-k]h[k]");
 		plotMultiply.setPoints(pointsFlipShift);
+
+		//getPoints for y[n]
+		//leave points empty for now, will be filled in draw()
+		pointsConvolve = [];
+		plotConvolve = new GPlot(p);
+		plotConvolve.setPos(0,0.9*p.width);
+		plotConvolve.setOuterDim(0.8 * p.width, 0.3 * p.width);
+		plotConvolve.setXLim(-21,21);
+		plotConvolve.setYLim(-25,25);
+		plotConvolve.getXAxis().getAxisLabel().setText("Time(n)");
+		plotConvolve.getYAxis().getAxisLabel().setText("y[n]");
+		plotConvolve.getTitle().setText("y[n]");
+		plotConvolve.setPoints(pointsConvolve);
+
 		//setup the mouse actions
 		window.addEventListener("mousedown",this.mouseDownEvent.bind(this));
 		window.addEventListener("mousemove",this.mouseMovedEvent.bind(this));
@@ -185,7 +199,7 @@ var DTConvolve = function(p){
 		for(i = 0; i<10; i++){
 			plotFlipShift.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
 		}
-		for(i = 33; i<42; i++){
+		for(i = 33; i<43; i++){
 			plotFlipShift.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
 		}
 
@@ -237,6 +251,7 @@ var DTConvolve = function(p){
 		}
 		plotMultiply.setPoints(pointsMultiply);
 		plotMultiply.setPointColor(p.color(255,215,0));
+
 		//draw x[n-k]h[k] plot
 		plotMultiply.beginDraw();
 		plotMultiply.drawBox();
@@ -252,7 +267,7 @@ var DTConvolve = function(p){
 		for(i = 0; i<10; i++){
 			plotMultiply.drawPoint(new GPoint(i-21,0),p.color(255,215,0),plotMultiply.getLayer("main layer").getPointSizes()[0]);
 		}
-		for(i = 33; i<42; i++){
+		for(i = 33; i<=42; i++){
 			plotMultiply.drawPoint(new GPoint(i-21,0),p.color(255,215,0),plotMultiply.getLayer("main layer").getPointSizes()[0]);
 		}
 
@@ -262,6 +277,26 @@ var DTConvolve = function(p){
 			plotMultiply.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(255,215,0),2);
 		}
 		plotMultiply.endDraw();
+
+		//get points for y[n] plot
+		// y[n] = Sum( h[k] * x[n-k], k, -Infinity, Infinity )
+		for(i = 0; i < length; i++){
+			for(j = 0; j < pointsXn.length; j++){
+		//		pointsConvolve[i] += plotXn.getPoints()[pointsXn.length-1-i]
+			}
+		}
+		//draw y[n] plot
+		plotConvolve.beginDraw();
+		plotConvolve.drawBox();
+		plotConvolve.drawXAxis();
+		plotConvolve.drawYAxis();
+		plotConvolve.drawTopAxis();
+		plotConvolve.drawRightAxis();
+		plotConvolve.drawTitle();
+		plotConvolve.drawLabels();
+		plotConvolve.drawGridLines(GPlot.BOTH);
+		plotConvolve.drawPoints();
+		plotConvolve.endDraw();
 	};
 
 	p.mouseDownEvent = function(event){
