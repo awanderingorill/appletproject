@@ -73,12 +73,15 @@ var DTConvolve = function(p){
 		plotFlipShift.getTitle().setText("x[n-k] and h[k]");
 		plotFlipShift.setPoints(pointsFlipShift);
 
+		//get points for x[n-k]h[k]
+		//leave points empty for noew, will be filled in draw()
+		pointsMultiply = [];
 		//set up plot x[n-k]h[k]
 		plotMultiply = new GPlot(p);
 		plotMultiply.setPos(0,0.6*p.width);
 		plotMultiply.setOuterDim(0.8 * p.width, 0.3 * p.width);
 		plotMultiply.setXLim(-21,21);
-		plotMultiply.setYLim(-5,5);
+		plotMultiply.setYLim(-25,25);
 		plotMultiply.getXAxis().getAxisLabel().setText("Time(n)");
 		plotMultiply.getYAxis().getAxisLabel().setText("x[n-k]h[k]");
 		plotMultiply.getTitle().setText("x[n-k]h[k]");
@@ -205,7 +208,35 @@ var DTConvolve = function(p){
 		}
 		plotFlipShift.endDraw();
 
-
+		//get points for x[n-k]h[k]
+		j = 1, k = pointsFlipShift.length-2;
+		if(leftBound >= -11){
+			for(i = 0; i < 23; i++){
+				if(i-11 < leftBound){
+					pointsMultiply[i] = new GPoint(i-11,0);
+					j+=2;
+				}
+				else {
+					pointsMultiply[i] = new GPoint(i-11,plotFlipShift.getPoints()[j].getY()*plotFlipShift.getPoints()[k].getY());
+					j+=2,k-=2;
+				}
+			}
+		}
+		else {
+			k = pointsFlipShift.length-((-11) - leftBound)*2;
+			for(i = 0; i < 23; i++){
+	//			console.log(k,j);
+				if(k >= 0){
+					pointsMultiply[i] = new GPoint(i-11,plotFlipShift.getPoints()[j].getY()*plotFlipShift.getPoints()[k].getY());
+					j+=2,k-=2;
+				}
+				else{
+					pointsMultiply[i] = new GPoint(i-11,0);
+				}
+			}
+		}
+		plotMultiply.setPoints(pointsMultiply);
+		plotMultiply.setPointColor(p.color(255,215,0));
 		//draw x[n-k]h[k] plot
 		plotMultiply.beginDraw();
 		plotMultiply.drawBox();
@@ -217,6 +248,19 @@ var DTConvolve = function(p){
 		plotMultiply.drawLabels();
 		plotMultiply.drawGridLines(GPlot.BOTH);
 		plotMultiply.drawPoints();
+		//these points are always 0 so we can just draw them
+		for(i = 0; i<10; i++){
+			plotMultiply.drawPoint(new GPoint(i-21,0),p.color(255,215,0),plotMultiply.getLayer("main layer").getPointSizes()[0]);
+		}
+		for(i = 33; i<42; i++){
+			plotMultiply.drawPoint(new GPoint(i-21,0),p.color(255,215,0),plotMultiply.getLayer("main layer").getPointSizes()[0]);
+		}
+
+		//draw lines to points
+		for(i = 0; i<pointsMultiply.length;i++){
+			tempPoint = plotMultiply.getPoints()[i];
+			plotMultiply.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(255,215,0),2);
+		}
 		plotMultiply.endDraw();
 	};
 
