@@ -166,13 +166,31 @@ var DTConvolve = function(p){
 				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(100,100,255),2);
 			}
 		}
+
 		//draw filler points
-		for(i = 0; i<length; i++){
-			if(i < 10 || i>32){
-				plotXnmkHk.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+		for(i = 0; i<10; i++){
+			plotXnmkHk.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+		}
+		for(i = 33; i<42; i++){
+			plotXnmkHk.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+		}
+
+		var startX,endX,rightBound,
+		leftBound = plotXnmkHk.getPoints()[pointsXnmkHk.length-2].getX();
+		if(leftBound > -11){
+			startX = -11;
+			endX = leftBound-1;
+		}
+		else{
+		 	rightBound = plotXnmkHk.getPoints()[0].getX();
+		 	if(rightBound < 11){
+			startX = rightBound+1;
+			endX = 11;
 			}
-			else{
-			}
+		}
+		console.log(leftBound,rightBound,startX,endX);
+		for(i = startX; i <= endX; i++){
+			plotXnmkHk.drawPoint(new GPoint(i,0),p.color(251,101,101),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
 		}
 		plotXnmkHk.endDraw();
 	};
