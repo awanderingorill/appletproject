@@ -1,7 +1,7 @@
 
 var DTConvolve = function(p){
-		var plotXn,plotHn,plotXnmkHk;
-		var pointsXn,pointsHn,pointsXnmkHk ;
+		var plotXn,plotHn,plotFlipShift,plotMultiply;
+		var pointsXn,pointsHn,pointsFlipShift,pointsMultiply;
 		var selected = false;
 		var point;
 		var tempPoint;
@@ -15,7 +15,7 @@ var DTConvolve = function(p){
  	p.setup = function() {
 	//	var i;
 		// Create the canvas
-		p.createCanvas(850, 650);
+		p.createCanvas(850, 1000);
 
 		// Define panel properties
 		firstPlotPos = [ 0, 0 ];
@@ -60,19 +60,29 @@ var DTConvolve = function(p){
 
 		//get points for x[n-k] and h[k]
 		//leave points empty for now, will be filled in draw()
-		pointsXnmkHk = [];
+		pointsFlipShift = [];
 
 		//set up plot x[n-k] and h[k]
-		plotXnmkHk = new GPlot(p);
-		plotXnmkHk.setPos(0,0.3*p.width);
-		plotXnmkHk.setOuterDim(0.8 * p.width, 0.3 * p.width);
-		plotXnmkHk.setXLim(-21,21);
-		plotXnmkHk.setYLim(-5,5);
-		plotXnmkHk.getXAxis().getAxisLabel().setText("Time(n)");
-		plotXnmkHk.getYAxis().getAxisLabel().setText("x[n-k] and h[k]");
-		plotXnmkHk.getTitle().setText("x[n-k] and h[k]");
-		plotXnmkHk.setPoints(pointsXnmkHk);
+		plotFlipShift = new GPlot(p);
+		plotFlipShift.setPos(0,0.3*p.width);
+		plotFlipShift.setOuterDim(0.8 * p.width, 0.3 * p.width);
+		plotFlipShift.setXLim(-21,21);
+		plotFlipShift.setYLim(-5,5);
+		plotFlipShift.getXAxis().getAxisLabel().setText("Time(n)");
+		plotFlipShift.getYAxis().getAxisLabel().setText("x[n-k] and h[k]");
+		plotFlipShift.getTitle().setText("x[n-k] and h[k]");
+		plotFlipShift.setPoints(pointsFlipShift);
 
+		//set up plot x[n-k]h[k]
+		plotMultiply = new GPlot(p);
+		plotMultiply.setPos(0,0.6*p.width);
+		plotMultiply.setOuterDim(0.8 * p.width, 0.3 * p.width);
+		plotMultiply.setXLim(-21,21);
+		plotMultiply.setYLim(-5,5);
+		plotMultiply.getXAxis().getAxisLabel().setText("Time(n)");
+		plotMultiply.getYAxis().getAxisLabel().setText("x[n-k]h[k]");
+		plotMultiply.getTitle().setText("x[n-k]h[k]");
+		plotMultiply.setPoints(pointsFlipShift);
 		//setup the mouse actions
 		window.addEventListener("mousedown",this.mouseDownEvent.bind(this));
 		window.addEventListener("mousemove",this.mouseMovedEvent.bind(this));
@@ -132,67 +142,82 @@ var DTConvolve = function(p){
 		//have to insert every other due to library coloring algorithm
 		var j = 0;
 		for(i = 0; i < pointsXn.length; i++){
-			pointsXnmkHk[j] = new GPoint(-plotXn.getPoints()[i].getX()+xShift,plotXn.getPoints()[i].getY());
+			pointsFlipShift[j] = new GPoint(-plotXn.getPoints()[i].getX()+xShift,plotXn.getPoints()[i].getY());
 			j+=2;
 		}
 		j = 1;
 		for(i = 0; i < pointsHn.length; i++){
-			pointsXnmkHk[j] = plotHn.getPoints()[i];
+			pointsFlipShift[j] = plotHn.getPoints()[i];
 			j+=2;
 		}
-		plotXnmkHk.setPoints(pointsXnmkHk);
+		plotFlipShift.setPoints(pointsFlipShift);
 
 		var XnmkhKColors = [p.color(251,101,101),p.color(100,100,255)];
-		plotXnmkHk.setPointColors(XnmkhKColors);
+		plotFlipShift.setPointColors(XnmkhKColors);
 
 		//draw X[n-k] and h[k]
-		plotXnmkHk.beginDraw();
-		plotXnmkHk.drawBox();
-		plotXnmkHk.drawXAxis();
-		plotXnmkHk.drawYAxis();
-		plotXnmkHk.drawTopAxis();
-		plotXnmkHk.drawRightAxis();
-		plotXnmkHk.drawTitle();
-		plotXnmkHk.drawLabels();
-		plotXnmkHk.drawGridLines(GPlot.BOTH);
-		plotXnmkHk.drawPoints();
+		plotFlipShift.beginDraw();
+		plotFlipShift.drawBox();
+		plotFlipShift.drawXAxis();
+		plotFlipShift.drawYAxis();
+		plotFlipShift.drawTopAxis();
+		plotFlipShift.drawRightAxis();
+		plotFlipShift.drawTitle();
+		plotFlipShift.drawLabels();
+		plotFlipShift.drawGridLines(GPlot.BOTH);
+		plotFlipShift.drawPoints();
+
 		//draw lines to points
-		for(i = 0; i<pointsXnmkHk.length;i++){
-			tempPoint = plotXnmkHk.getPoints()[i];
+		for(i = 0; i<pointsFlipShift.length;i++){
+			tempPoint = plotFlipShift.getPoints()[i];
 			if(i % 2 == 0){
-				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(251,101,101),2);
+				plotFlipShift.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(251,101,101),2);
 			}
 			else {
-				plotXnmkHk.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(100,100,255),2);
+				plotFlipShift.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(100,100,255),2);
 			}
 		}
 
 		//draw filler points
 		for(i = 0; i<10; i++){
-			plotXnmkHk.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+			plotFlipShift.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
 		}
 		for(i = 33; i<42; i++){
-			plotXnmkHk.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+			plotFlipShift.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
 		}
 
 		var startX,endX,rightBound,
-		leftBound = plotXnmkHk.getPoints()[pointsXnmkHk.length-2].getX();
+		leftBound = plotFlipShift.getPoints()[pointsFlipShift.length-2].getX();
 		if(leftBound > -11){
 			startX = -11;
 			endX = leftBound-1;
 		}
 		else{
-		 	rightBound = plotXnmkHk.getPoints()[0].getX();
+		 	rightBound = plotFlipShift.getPoints()[0].getX();
 		 	if(rightBound < 11){
 			startX = rightBound+1;
 			endX = 11;
 			}
 		}
-		console.log(leftBound,rightBound,startX,endX);
+
 		for(i = startX; i <= endX; i++){
-			plotXnmkHk.drawPoint(new GPoint(i,0),p.color(251,101,101),plotXnmkHk.getLayer("main layer").getPointSizes()[0]);
+			plotFlipShift.drawPoint(new GPoint(i,0),p.color(251,101,101),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
 		}
-		plotXnmkHk.endDraw();
+		plotFlipShift.endDraw();
+
+
+		//draw x[n-k]h[k] plot
+		plotMultiply.beginDraw();
+		plotMultiply.drawBox();
+		plotMultiply.drawXAxis();
+		plotMultiply.drawYAxis();
+		plotMultiply.drawTopAxis();
+		plotMultiply.drawRightAxis();
+		plotMultiply.drawTitle();
+		plotMultiply.drawLabels();
+		plotMultiply.drawGridLines(GPlot.BOTH);
+		plotMultiply.drawPoints();
+		plotMultiply.endDraw();
 	};
 
 	p.mouseDownEvent = function(event){
@@ -213,8 +238,8 @@ var DTConvolve = function(p){
 			selected = true;
 		//	console.log(selected);
 		}
-		else if (plotXnmkHk.isOverBox()){
-			plotXY = plotXnmkHk.getValueAt(p.mouseX,p.mouseY);
+		else if (plotFlipShift.isOverBox()){
+			plotXY = plotFlipShift.getValueAt(p.mouseX,p.mouseY);
 			xShift = Math.round(plotXY[0]);
 			selected = true;
 		}
@@ -240,8 +265,8 @@ var DTConvolve = function(p){
 			//		console.log(selected);
 					plotHn.getPointsRef()[index].setY(plotXY[1]);
 				}
-				else if(plotXnmkHk.isOverBox()){
-					plotXY = plotXnmkHk.getValueAt(p.mouseX,p.mouseY);
+				else if(plotFlipShift.isOverBox()){
+					plotXY = plotFlipShift.getValueAt(p.mouseX,p.mouseY);
 					xShift = Math.round(plotXY[0]);
 				}
 				else {
