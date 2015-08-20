@@ -13,6 +13,8 @@ var DTConvolve = function(p){
 		var xShift = 0;
 	//initial set up
  	p.setup = function() {
+		p.frameRate(200);
+
 	//	var i;
 		// Create the canvas
 		p.createCanvas(850, 1100);
