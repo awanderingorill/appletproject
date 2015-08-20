@@ -272,7 +272,7 @@ var DTConvolve = function(p){
 		}
 
 		//draw lines to points
-		for(i = 0; i<pointsMultiply.length;i++){
+		for(i = 0; i < pointsMultiply.length;i++){
 			tempPoint = plotMultiply.getPoints()[i];
 			plotMultiply.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(255,215,0),2);
 		}
@@ -280,15 +280,16 @@ var DTConvolve = function(p){
 
 		//get points for y[n] plot
 		// y[n] = Sum( h[k] * x[n-k], k, -Infinity, Infinity )
-		tempPoint = new GPoint(xShift,0);
-		for(i = 0; i < pointsMultiply.length; i++){
-			tempPoint.setY(tempPoint.getY() + plotMultiply.getPoints()[i].getY());
+		if(selected && plotFlipShift.isOverBox()){
+			tempPoint = new GPoint(xShift,0);
+			for(i = 0; i < pointsMultiply.length; i++){
+				tempPoint.setY(tempPoint.getY() + plotMultiply.getPoints()[i].getY());
+			}
+			plotConvolve.addPoint(tempPoint);
+			console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
+			plotConvolve.updateLimits();
+			console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
 		}
-		plotConvolve.addPoint(tempPoint);
-		console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
-		plotConvolve.updateLimits();
-		console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
-
 		//draw y[n] plot
 		plotConvolve.beginDraw();
 		plotConvolve.drawBox();
@@ -300,7 +301,8 @@ var DTConvolve = function(p){
 		plotConvolve.drawLabels();
 		plotConvolve.drawGridLines(GPlot.BOTH);
 		plotConvolve.drawPoints();
-		for(i = 0; i<pointsConvolve.length;i++){
+		//draw lines to points
+		for(i = 0; i < pointsConvolve.length;i++){
 			tempPoint = plotConvolve.getPoints()[i];
 			plotConvolve.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(255,215,0),2);
 		}
