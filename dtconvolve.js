@@ -285,10 +285,12 @@ var DTConvolve = function(p){
 			for(i = 0; i < pointsMultiply.length; i++){
 				tempPoint.setY(tempPoint.getY() + plotMultiply.getPoints()[i].getY());
 			}
-			plotConvolve.addPoint(tempPoint);
-			console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
-			plotConvolve.updateLimits();
-			console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
+
+			var screenPos =	plotConvolve.getScreenPosAtValue(tempPoint.getX(),tempPoint.getY())
+			if(plotConvolve.getPointAt(screenPos[0],screenPos[1]) == undefined){
+				plotConvolve.addPoint(tempPoint);
+				plotConvolve.updateLimits();
+			}
 		}
 		//draw y[n] plot
 		plotConvolve.beginDraw();
@@ -300,11 +302,12 @@ var DTConvolve = function(p){
 		plotConvolve.drawTitle();
 		plotConvolve.drawLabels();
 		plotConvolve.drawGridLines(GPlot.BOTH);
+		plotConvolve.setPointColor(p.color(0,128,0));
 		plotConvolve.drawPoints();
 		//draw lines to points
-		for(i = 0; i < pointsConvolve.length;i++){
+		for(i = 0; i < plotConvolve.getPoints().length;i++){
 			tempPoint = plotConvolve.getPoints()[i];
-			plotConvolve.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(255,215,0),2);
+			plotConvolve.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(0,128,0),2);
 		}
 		plotConvolve.endDraw();
 	};
@@ -318,6 +321,11 @@ var DTConvolve = function(p){
 			plotXn.getPointsRef()[index].setY(plotXY[1]);
 			selected = true;
 	//		console.log(selected);
+			//clear points on convolution graph
+			i = 0;
+			while(i < plotConvolve.getPoints().length){
+				plotConvolve.removePoint(i);
+			}
 		}
 		else if(plotHn.isOverBox()){
 			plotXY = plotHn.getValueAt(p.mouseX,p.mouseY);
@@ -325,7 +333,12 @@ var DTConvolve = function(p){
 			index = xPlot + 11;
 			plotHn.getPointsRef()[index].setY(plotXY[1]);
 			selected = true;
-		//	console.log(selected);
+	//	console.log(selected);
+		//clear points on convolution graph
+			i = 0;
+			while(i < plotConvolve.getPoints().length){
+				plotConvolve.removePoint(i);
+			}
 		}
 		else if (plotFlipShift.isOverBox()){
 			plotXY = plotFlipShift.getValueAt(p.mouseX,p.mouseY);
