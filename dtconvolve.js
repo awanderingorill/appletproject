@@ -94,7 +94,7 @@ var DTConvolve = function(p){
 		plotConvolve.setPos(0,0.9*p.width);
 		plotConvolve.setOuterDim(0.8 * p.width, 0.3 * p.width);
 		plotConvolve.setXLim(-21,21);
-		plotConvolve.setYLim(-25,25);
+	//	plotConvolve.setYLim(-100,100);
 		plotConvolve.getXAxis().getAxisLabel().setText("Time(n)");
 		plotConvolve.getYAxis().getAxisLabel().setText("y[n]");
 		plotConvolve.getTitle().setText("y[n]");
@@ -280,11 +280,15 @@ var DTConvolve = function(p){
 
 		//get points for y[n] plot
 		// y[n] = Sum( h[k] * x[n-k], k, -Infinity, Infinity )
-		for(i = 0; i < length; i++){
-			for(j = 0; j < pointsXn.length; j++){
-		//		pointsConvolve[i] += plotXn.getPoints()[pointsXn.length-1-i]
-			}
+		tempPoint = new GPoint(xShift,0);
+		for(i = 0; i < pointsMultiply.length; i++){
+			tempPoint.setY(tempPoint.getY() + plotMultiply.getPoints()[i].getY());
 		}
+		plotConvolve.addPoint(tempPoint);
+		console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
+		plotConvolve.updateLimits();
+		console.log(plotConvolve.getXLim(),plotConvolve.getYLim());
+
 		//draw y[n] plot
 		plotConvolve.beginDraw();
 		plotConvolve.drawBox();
@@ -296,6 +300,10 @@ var DTConvolve = function(p){
 		plotConvolve.drawLabels();
 		plotConvolve.drawGridLines(GPlot.BOTH);
 		plotConvolve.drawPoints();
+		for(i = 0; i<pointsConvolve.length;i++){
+			tempPoint = plotConvolve.getPoints()[i];
+			plotConvolve.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(255,215,0),2);
+		}
 		plotConvolve.endDraw();
 	};
 
