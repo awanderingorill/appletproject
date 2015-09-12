@@ -132,6 +132,7 @@ var CTConvolve = function(p){
 			plotXn.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(251,101,101),2);
 		}*/
 		plotXn.getLayer("main layer").updatePlotPoints();
+		plotXn.setLineColor("cyan");
 		plotXn.drawLines();
 		plotXn.endDraw();
 
@@ -156,6 +157,7 @@ var CTConvolve = function(p){
 		}*/
 
 		plotHn.getLayer("main layer").updatePlotPoints();
+		plotHn.setLineColor("orange");
 		plotHn.drawLines();
 		plotHn.endDraw();
 
@@ -186,7 +188,18 @@ var CTConvolve = function(p){
 		plotFlipShift.drawTitle();
 		plotFlipShift.drawLabels();
 		plotFlipShift.drawGridLines(GPlot.BOTH);
-		plotFlipShift.drawLines();
+
+		//drawing lines (due to point dispersement must use custom line drawing algorithm)
+		for(i = 0; i<plotFlipShift.getPoints().length-2; i++){
+			if(i%2 == 0){
+				plotFlipShift.drawLine(plotFlipShift.getPoints()[i],plotFlipShift.getPoints()[i+2],"cyan",1);
+			}
+			else{
+				plotFlipShift.drawLine(plotFlipShift.getPoints()[i],plotFlipShift.getPoints()[i+2],"orange",1);
+			}
+		}
+
+
 
 		//draw lines to points
 /*		for(i = 0; i<pointsFlipShift.length;i++){
