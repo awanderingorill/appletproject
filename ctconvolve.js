@@ -200,6 +200,19 @@ var CTConvolve = function(p){
 		plotFlipShift.endDraw();
 
 		//get points for x[n-k]h[k]
+		var startX,endX,rightBound,
+		leftBound = plotFlipShift.getPoints()[pointsFlipShift.length-2].getX();
+		if(leftBound > -11){
+			startX = -11;
+			endX = leftBound-1;
+		}
+		else{
+		 	rightBound = plotFlipShift.getPoints()[0].getX();
+		 	if(rightBound < 11){
+			startX = rightBound+1;
+			endX = 11;
+			}
+		}
 		j = 1, k = pointsFlipShift.length-2;
 		if(leftBound >= -11){
 			for(i = 0; i < 23; i++){
