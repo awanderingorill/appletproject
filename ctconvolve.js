@@ -188,8 +188,7 @@ var CTConvolve = function(p){
 		plotFlipShift.drawTitle();
 		plotFlipShift.drawLabels();
 		plotFlipShift.drawGridLines(GPlot.BOTH);
-
-		//drawing lines (due to point dispersement must use custom line drawing algorithm)
+		//drawing line (due to point dispersement must use custom line drawing algorithm)
 		for(i = 0; i<plotFlipShift.getPoints().length-2; i++){
 			if(i%2 == 0){
 				plotFlipShift.drawLine(plotFlipShift.getPoints()[i],plotFlipShift.getPoints()[i+2],"cyan",1);
@@ -197,45 +196,6 @@ var CTConvolve = function(p){
 			else{
 				plotFlipShift.drawLine(plotFlipShift.getPoints()[i],plotFlipShift.getPoints()[i+2],"orange",1);
 			}
-		}
-
-
-
-		//draw lines to points
-/*		for(i = 0; i<pointsFlipShift.length;i++){
-			tempPoint = plotFlipShift.getPoints()[i];
-			if(i % 2 == 0){
-				plotFlipShift.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(251,101,101),2);
-			}
-			else {
-				plotFlipShift.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(100,100,255),2);
-			}
-		}*/
-
-		//draw filler points
-		for(i = 0; i<10; i++){
-			plotFlipShift.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
-		}
-		for(i = 33; i<43; i++){
-			plotFlipShift.drawPoint(new GPoint(i-21,0),p.color(100,100,255),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
-		}
-
-		var startX,endX,rightBound,
-		leftBound = plotFlipShift.getPoints()[pointsFlipShift.length-2].getX();
-		if(leftBound > -11){
-			startX = -11;
-			endX = leftBound-1;
-		}
-		else{
-		 	rightBound = plotFlipShift.getPoints()[0].getX();
-		 	if(rightBound < 11){
-			startX = rightBound+1;
-			endX = 11;
-			}
-		}
-
-		for(i = startX; i <= endX; i++){
-			plotFlipShift.drawPoint(new GPoint(i,0),p.color(251,101,101),plotFlipShift.getLayer("main layer").getPointSizes()[0]);
 		}
 		plotFlipShift.endDraw();
 
@@ -279,15 +239,19 @@ var CTConvolve = function(p){
 		plotMultiply.drawTitle();
 		plotMultiply.drawLabels();
 		plotMultiply.drawGridLines(GPlot.BOTH);
+		plotMultiply.setLineColor("red");
+		plotMultiply.addPointAtIndexPos(0,-20,0);//adds filler line in beginning
+		plotMultiply.addPointAtIndexPos(plotMultiply.getPoints().length,21,0);//adds filler line at end
 		plotMultiply.drawLines();
+
 		//these points are always 0 so we can just draw them
-		for(i = 0; i<10; i++){
+/*		for(i = 0; i<10; i++){
 			plotMultiply.drawPoint(new GPoint(i-21,0),p.color(255,215,0),plotMultiply.getLayer("main layer").getPointSizes()[0]);
 		}
 		for(i = 33; i<=42; i++){
 			plotMultiply.drawPoint(new GPoint(i-21,0),p.color(255,215,0),plotMultiply.getLayer("main layer").getPointSizes()[0]);
 		}
-
+*/
 		//draw lines to points
 /*		for(i = 0; i < pointsMultiply.length;i++){
 			tempPoint = plotMultiply.getPoints()[i];
@@ -305,7 +269,8 @@ var CTConvolve = function(p){
 
 			var screenPos =	plotConvolve.getScreenPosAtValue(tempPoint.getX(),tempPoint.getY())
 			if(plotConvolve.getPointAt(screenPos[0],screenPos[1]) == undefined){
-				plotConvolve.addPoint(tempPoint);
+				var tempIndex = tempPoint.getX();
+				plotConvolve.addPointAtIndexPos(tempPoint.getX(),tempPoint);
 				plotConvolve.updateLimits();
 			}
 		}
@@ -319,7 +284,7 @@ var CTConvolve = function(p){
 		plotConvolve.drawTitle();
 		plotConvolve.drawLabels();
 		plotConvolve.drawGridLines(GPlot.BOTH);
-		plotConvolve.setPointColor(p.color(0,128,0));
+		plotConvolve.setLineColor(p.color(0,128,0));
 		plotConvolve.drawLines();
 
   	//draw lines to points
