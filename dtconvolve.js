@@ -282,15 +282,15 @@ var DTConvolve = function(p){
 
 		//get points for y[n] plot
 		// y[n] = Sum( h[k] * x[n-k], k, -Infinity, Infinity )
-		if(selected && plotFlipShift.isOverBox()){
+		if(selected && plotFlipShift.isOverBox()){//convolution plot updates when clicked and over flipShift plot
 			tempPoint = new GPoint(xShift,0);
 			for(i = 0; i < pointsMultiply.length; i++){
-				tempPoint.setY(tempPoint.getY() + plotMultiply.getPoints()[i].getY());
+				tempPoint.setY(tempPoint.getY() + plotMultiply.getPoints()[i].getY());//convolution equation
 			}
 
 			var screenPos =	plotConvolve.getScreenPosAtValue(tempPoint.getX(),tempPoint.getY())
-			if(plotConvolve.getPointAt(screenPos[0],screenPos[1]) == undefined){
-				plotConvolve.addPoint(tempPoint);
+			if(plotConvolve.getPointAt(screenPos[0],screenPos[1]) == undefined){//if point doesn't already exist
+				plotConvolve.addPointAtIndexPos(tempPoint);
 				plotConvolve.updateLimits();
 			}
 		}
@@ -322,8 +322,7 @@ var DTConvolve = function(p){
 			index = xPlot + 11;
 			plotXn.getPointsRef()[index].setY(plotXY[1]);
 			selected = true;
-	//		console.log(selected);
-			//clear points on convolution graph
+			//clear points on convolution graph (every time you change the input signals the convolution should reset)
 			i = 0;
 			while(i < plotConvolve.getPoints().length){
 				plotConvolve.removePoint(i);
@@ -335,8 +334,7 @@ var DTConvolve = function(p){
 			index = xPlot + 11;
 			plotHn.getPointsRef()[index].setY(plotXY[1]);
 			selected = true;
-	//	console.log(selected);
-		//clear points on convolution graph
+		//clear points on convolution graph (every time you change the input signals the convolution should reset)
 			i = 0;
 			while(i < plotConvolve.getPoints().length){
 				plotConvolve.removePoint(i);
@@ -353,20 +351,17 @@ var DTConvolve = function(p){
 	};
 
 	p.mouseMovedEvent = function(event){
-//		console.log("mouse moved");
 			if(selected){
 				if(plotXn.isOverBox()){
 					plotXY = plotXn.getValueAt(p.mouseX,p.mouseY);
 					xPlot = Math.round(plotXY[0]);
 					index = xPlot + 11;
-			//		console.log(selected);
 					plotXn.getPointsRef()[index].setY(plotXY[1]);
 				}
 				else if(plotHn.isOverBox()){
 					plotXY = plotHn.getValueAt(p.mouseX,p.mouseY);
 					xPlot = Math.round(plotXY[0]);
 					index = xPlot + 11;
-			//		console.log(selected);
 					plotHn.getPointsRef()[index].setY(plotXY[1]);
 				}
 				else if(plotFlipShift.isOverBox()){
@@ -380,7 +375,6 @@ var DTConvolve = function(p){
 	};
 
 	p.mouseUpEvent = function(event){
-	//	console.log("mouse upped");
 		selected = false;
 	};
 }

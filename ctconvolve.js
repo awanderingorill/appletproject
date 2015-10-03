@@ -281,9 +281,14 @@ var CTConvolve = function(p){
 			}
 
 			var screenPos =	plotConvolve.getScreenPosAtValue(tempPoint.getX(),tempPoint.getY())
-			if(plotConvolve.getPointAt(screenPos[0],screenPos[1]) == undefined){
+			if(plotConvolve.getPointAt(screenPos[0],screenPos[1]) == undefined){//if point doesn't already exist
 				var tempIndex = tempPoint.getX();
-				plotConvolve.addPointAtIndexPos(tempPoint.getX(),tempPoint);
+				for(i = 0; i < plotConvolve.getPoints().length; i++){
+					if(plotConvolve.getPoints()[i].getX()<= tempPoint.getX()){
+						break;
+					}
+				}
+				plotConvolve.addPointAtIndexPos(i,tempPoint);
 				plotConvolve.updateLimits();
 			}
 		}
@@ -300,10 +305,10 @@ var CTConvolve = function(p){
 		plotConvolve.setLineColor(p.color(0,128,0));
 		plotConvolve.drawLines();
 
-  	//draw lines to points
-/*		for(i = 0; i < plotConvolve.getPoints().length;i++){
+  /*	//draw lines to points
+		for(i = 0; i < plotConvolve.getPoints().length;i++){
 			tempPoint = plotConvolve.getPoints()[i];
-			plotConvolve.drawLine(new GPoint(tempPoint.getX(),0),tempPoint,p.color(0,128,0),2);
+			plotConvolve.drawLine(plotConvolve.getPointp.color(0,128,0),2);
 		}*/
 		plotConvolve.endDraw();
 	};
